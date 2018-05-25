@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta http-equiv="X-UA-Compatible" content="ie=edge">
+		<title>用户注册</title>
+		<link rel="stylesheet" href="Plugins/layui/css/layui.css">
+		<link rel="stylesheet" href="css/login.css">
+	</head>
+
+	<body>
+		<div id="container" class="kit-login">
+			<div class="kit-login-bg"></div>
+			<div class="kit-login-wapper">
+				<h1 class="kit-login-slogan">欢迎使用 <br>小区物业后台管理系统</h1>
+				<div class="kit-login-form">
+					<h4 class="kit-login-title">用户注册</h4>
+					<form class="layui-form">
+						<div class="kit-login-row">
+							<div class="kit-login-col">
+								<i class="layui-icon">&#xe616;</i>
+								<span class="kit-login-input">
+                <input type="text" maxlength="12" placeholder="请输入账号" v-model="name"/>
+              </span>
+							</div>
+							<div class="kit-login-col"></div>
+						</div>
+						<div class="kit-login-row">
+							<div class="kit-login-col">
+								<i class="layui-icon">&#xe63b;</i>
+								<span class="kit-login-input">
+                <input type="tel" maxlength="11" placeholder="请输入手机号" v-model="phone"/>
+              </span>
+							</div>
+							<div class="kit-login-col"></div>
+						</div>
+						<div class="kit-login-row">
+							<div class="kit-login-col">
+								<i class="layui-icon">&#xe624;</i>
+								<span class="kit-login-input">
+                <input type="email" maxlength="18" placeholder="请输入邮箱" v-model="email"/>
+              </span>
+							</div>
+							<div class="kit-login-col"></div>
+						</div>
+						<div class="kit-login-row">
+							<div class="kit-login-col">
+								<i class="layui-icon">&#xe642;</i>
+								<span class="kit-login-input">
+                <input type="password" maxlength="12" placeholder="请输入密码" v-model="password"/>
+              </span>
+							</div>
+							<div class="kit-login-col"></div>
+						</div>
+						<div class="kit-login-row">
+							<button class="layui-btn kit-login-btn" lay-submit type="button" @click="zhuce">注册</button>
+						</div>
+						<div class="kit-login-row" style="margin-bottom:0;">
+							<a href="login.html" style="color: rgb(153, 153, 153); text-decoration: none; font-size: 13px;" id="login">已有账号去登录</a>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+		<script src="Plugins/jquery-2.1.0.js"></script>
+		<script src="Plugins/layui/layui.js"></script>
+		<script src="Plugins/vue.js"></script>
+		<script>
+			layui.use(['form', 'layedit', 'laydate'], function() {
+				var form = layui.form,
+					layer = layui.layer,
+					layedit = layui.layedit,
+					laydate = layui.laydate;
+			});
+
+			var vm = new Vue({
+				el: "#container",
+				data: {
+					name: "",
+					password: "",
+					email: "",
+					phone: ""
+				},
+				mounted: function() {
+					this.$nextTick(function() {
+						//
+					})
+				},
+				methods: {
+					//获取json 数据
+					zhuce: function() {
+						var url = "http://localhost:8080/pro_Servers/users/";
+						var obj = {
+							"Name": vm.name,
+							"Password": vm.password,
+							"Email": vm.email,
+							"Phone": vm.phone
+						}
+
+						if(!obj.Name) {
+							layer.msg('请填写昵称！');
+							return;
+						} else if(!obj.Password) {
+							layer.msg('请填写密码！');
+							return;
+						} else if(!obj.Phone) {
+							layer.msg('请填写手机号！');
+							return;
+						} else if(!obj.Email) {
+							layer.msg('请填写邮箱！');
+							return;
+						}
+						console.log(obj);
+
+						$.ajax({
+							type: "POST",
+							url: url,
+							data: obj,
+							success: function(res) {
+								if(res == '插入成功') {
+									layer.msg('注册成功！');
+									setTimeout(function() {
+										window.open('login.html', '_self');
+									}, 2000);
+								} else {
+									layer.msg('注册失败！');
+								}
+							}
+						});
+					}
+				}
+			});
+		</script>
+	</body>
+
+</html>

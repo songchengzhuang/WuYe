@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>物业缴费单</title>
+		<meta name="renderer" content="webkit">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+		<link rel="stylesheet" href="../../Plugins/layui/css/layui.css" media="all">
+		<style>
+			body {
+				min-height: 100vh;
+				background: url(../../img/propMoneyBG.jpg) no-repeat center center;
+				background-size: cover;
+			}
+			
+			.goIndex {
+				position: fixed;
+				top: 48px;
+				left: 30px;
+				width: 60px;
+				height: 30px;
+				line-height: 30px;
+				color: forestgreen;
+				padding: 0 10px;
+				border-radius: 6px;
+				background-color: #FFF;
+				opacity: 0.5;
+				cursor: pointer;
+			}
+			
+			.goIndex:hover {
+				opacity: 0.7;
+			}
+			
+			.container {
+				width: 800px;
+				padding: 15px;
+				text-align: center;
+				position: absolute;
+				margin: 0 auto;
+				top: 0;
+				right: 0;
+				bottom: 0;
+				left: 0;
+			}
+			
+			.container .propMoneyBg {
+				width: 100%;
+				height: 100%;
+				background-color: #CCC;
+				opacity: 0.7;
+				z-index: -1;
+				position: absolute;
+				top: 0;
+				left: 0;
+			}
+			
+			.container .redStar {
+				font-size: 20px;
+				color: #EA2000;
+			}
+			
+			.container h2 {
+				font-size: 30px;
+				line-height: 30px;
+				margin-top: 35px;
+				margin-bottom: 45px;
+				letter-spacing: 5px;
+			}
+			
+			.container input:hover {
+				border: 1px solid #00cc77!important;
+			}
+			
+			.container button {
+				margin: 10px 25px;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div id="container" class="container">
+			<div class="goIndex" onclick="window.open('../../index.html','_self')">返回首页</div>
+			<div class="propMoneyBg"></div>
+			<h2>物业缴费</h2>
+			<form class="layui-form" action="">
+				<div class="layui-form-item">
+					<label class="layui-form-label"><span class="redStar">*</span>业主姓名</label>
+					<div class="layui-input-block">
+						<input type="text" maxlength="10" readonly="readonly" autocomplete="off" placeholder="请填写业主名" class="layui-input" v-model="ownerName">
+					</div>
+				</div>
+				<div class="layui-form-item">
+					<label class="layui-form-label"><span class="redStar">*</span>住宅地址</label>
+					<div class="layui-input-block">
+						<input type="text" maxlength="30" readonly="readonly" autocomplete="off" placeholder="请填写几楼几单元几室" class="layui-input" v-model="ownerAddress">
+					</div>
+				</div>
+				<div class="layui-form-item">
+					<label class="layui-form-label">费用类型</label>
+					<div class="layui-input-block">
+						<input type="text" autocomplete="off" placeholder="请填写费用类型" class="layui-input" v-model="chargeName">
+					</div>
+				</div>
+				<div class="layui-form-item">
+					<label class="layui-form-label">缴纳额度</label>
+					<div class="layui-input-block">
+						<input type="number" autocomplete="off" placeholder="请填写缴纳额度" class="layui-input" v-model="chargeMoney">
+					</div>
+				</div>
+				<div class="layui-form-item">
+					<button class="layui-btn" type="button" lay-filter="demo2" @click="userAddProp">保存</button>
+					<button class="layui-btn" type="reset" lay-filter="demo2">重置</button>
+				</div>
+			</form>
+		</div>
+		<script src="../../Plugins/jquery-2.1.0.js"></script>
+		<script src="../../Plugins/layui/layui.js"></script>
+		<script src="../../Plugins/vue.js"></script>
+		<script src="../../js/common.js"></script>
+		<script>
+			var vm = new Vue({
+				el: "#container",
+				data: {
+					loginData: '',
+					ownerID: '',
+					propid: '',
+					ownerName: '',
+					ownerAddress: '',
+					chargeName: '',
+					chargeMoney: '',
+				},
+				mounted: function() {
+					this.$nextTick(function() {
+						layui.use(['layer', 'form'], function() {
+							var form = layui.form,
+								layer = layui.layer
+						});
+						setTimeout(function() {
+							vm.ownerID = query('id');
+							vm.propid = query('propid');
+							vm.getLoginData();
+							vm.isLogin();
+							vm.ownerIdData();
+							if(vm.propid != undefined) {
+								vm.propidData();
+							}
+
+						});
+					})
+				},
+				methods: {
+					//获取本地登录信息
+					getLoginData: function() {
+						if(localStorage.loginUrseData) {
+							vm.loginData = JSON.parse(localStorage.getItem('loginUrseData'));
+						}
+					},
+					//判断是否登录
+					isLogin: function() {
+						if(vm.loginData == '') {
+							window.open('../login.html', '_self');
+						}
+					},
+					//根据业主id获取该业主数据
+					ownerIdData: function() {
+						var url = "http://localhost:8080/pro_Servers/owner/ownerID/" + query('id');
+						$.ajax({
+							type: "GET",
+							url: url,
+							success: function(res) {
+								console.log(res);
+								if(res.status == 'ok') {
+									vm.ownerID = res.t.ownerID;
+									vm.ownerAddress = res.t.ownerInfo;
+									vm.ownerName = res.t.ownerName;
+								} else {
+									layer.msg('信息获取失败！');
+								}
+							},
+							error: function() {
+								layer.msg('信息获取失败！');
+							}
+						});
+					},
+					//根据报修id获取该缴费数据
+					propidData: function() {
+						var url = "http://localhost:8080/pro_Servers/charge/propid/" + query('propid');
+						$.ajax({
+							type: "GET",
+							url: url,
+							success: function(res) {
+								console.log(res);
+								if(res.status == 'ok') {
+									vm.ownerID = res.t.ownerID;
+									vm.chargeName = res.t.chargeName;
+									vm.chargeMoney = res.t.chargeMoney;
+								} else {
+									layer.msg('信息获取失败！');
+								}
+							},
+							error: function() {
+								layer.msg('信息获取失败！');
+							}
+						});
+					},
+					//添加缴费
+					userAddProp: function() {
+						if(vm.propid == undefined) {
+							var url = "http://localhost:8080/pro_Servers/charge/";
+						} else {
+							var url = "http://localhost:8080/pro_Servers/charge/update"
+						}
+
+						var newDate = new Date();
+						var upDate = newDate.getFullYear() + ' - ' + (newDate.getMonth() + 1) + ' - ' + newDate.getDate();
+
+						var obj = {
+							"ownerID": vm.ownerID, //业主id
+							"chargeTime": vm.ownerAddress, //业主住址
+							"chargeName": vm.chargeName, //损坏描述
+							"chargeMoney": vm.chargeMoney, //维修费用
+							"update_Tm": upDate //时间
+						}
+						if(vm.propid != undefined) {
+							obj['chargeID'] = vm.propid;
+						}
+
+						if(!obj.chargeTime) {
+							layer.msg('请填写住址！');
+							return
+						} else if(!vm.chargeName) {
+							layer.msg('请填写缴费类型！');
+							return
+						} else if(!obj.chargeMoney) {
+							layer.msg('请填写缴纳额度！');
+							return
+						} else if(!vm.ownerName) {
+							layer.msg('请填写业主姓名！');
+							return
+						}
+						console.log(obj);
+
+						$.ajax({
+							type: "POST",
+							url: url,
+							data: obj,
+							success: function(res) {
+								if(res.stuts == 'ok') {
+									layer.msg('操作成功！');
+									setTimeout(function() {
+										window.open('propMoneyList.html', '_self');
+									}, 1200);
+								} else {
+									layer.msg('操作失败！');
+								}
+							},
+							error: function() {
+								layer.msg('操作失败！');
+							}
+						});
+					}
+				}
+			});
+		</script>
+
+	</body>
+
+</html>

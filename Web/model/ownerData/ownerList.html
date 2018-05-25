@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+		<title>业主信息列表</title>
+		<link rel="stylesheet" href="../../Plugins/layui/css/layui.css">
+		<style type="text/css">
+			body {
+				min-height: 100vh;
+				background: url(../../img/ownerBG.jpg) no-repeat center center;
+				background-size: cover;
+			}
+			
+			.goIndex {
+				position: fixed;
+				top: 48px;
+				left: 30px;
+				width: 60px;
+				height: 30px;
+				line-height: 30px;
+				color: forestgreen;
+				padding: 0 10px;
+				border-radius: 6px;
+				background-color: #FFF;
+				opacity: 0.5;
+				cursor: pointer;
+			}
+			
+			.goIndex:hover {
+				opacity: 0.7;
+			}
+			
+			.container {
+				width: 1200px;
+				padding: 15px;
+				text-align: center;
+				position: absolute;
+				margin: 0 auto;
+				top: 0;
+				right: 0;
+				bottom: 0;
+				left: 0;
+			}
+			
+			.container .search {
+				width: 100%;
+				height: 38px;
+				/*CSS3弹性盒子*/
+				display: -ms-flex;
+				display: -webkit-flex;
+				display: flex;
+				-webkit-flex-direction: row;
+				-ms-flex-direction: row;
+				flex-direction: row;
+				-ms-flex-align: center;
+				-webkit-align-items: center;
+				-webkit-box-align: center;
+				align-items: center;
+			}
+			
+			.container .search span {
+				display: inline-block;
+				width: 120px;
+				height: 38px;
+				line-height: 38px;
+				font-size: 18px;
+				color: #FFF;
+				text-align: center;
+				background-color: #e6e6e6;
+				cursor: pointer;
+			}
+			
+			.container .search .searchTxt {
+				font-weight: 600;
+				color: #333;
+			}
+			
+			.container .search .searchBtn {
+				background-color: #00b86b;
+				cursor: pointer;
+			}
+			
+			.container .search .searchBtn:hover {
+				background-color: #00cc77;
+			}
+			
+			.container .search input {
+				float: left;
+				/*width: 626px;*/
+				height: 38px;
+				color: #333;
+				font-size: 18px;
+				padding-left: 20px;
+				border: none;
+			}
+			
+			.container .propMoneyBg {
+				width: 100%;
+				height: 100%;
+				background-color: #CCC;
+				opacity: 0.7;
+				z-index: -1;
+				position: absolute;
+				top: 0;
+				left: 0;
+			}
+			
+			.container h2 {
+				font-size: 30px;
+				line-height: 30px;
+				margin-top: 35px;
+				margin-bottom: 45px;
+				letter-spacing: 5px;
+			}
+			
+			.container table th {
+				font-weight: 600;
+				color: #333;
+				text-align: center;
+			}
+			
+			.container button {
+				margin: 0!important;
+			}
+			
+			.layui-table {
+				margin-bottom: 0px!important;
+			}
+			
+			.noData {
+				height: 50px;
+				line-height: 50px;
+				color: #666;
+				text-align: center;
+				background-color: #FFF;
+			}
+			
+			.container .addBtn {
+				margin-left: 15px;
+				background-color: #D84C29!important;
+				cursor: pointer;
+			}
+			
+			.container .addBtn:hover {
+				background-color: #dc5d3d!important;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div id="container" class="container">
+			<div class="goIndex" onclick="window.open('../../index.html','_self')">返回首页</div>
+			<div class="propMoneyBg"></div>
+			<h2>业主信息列表</h2>
+			<div class="search">
+				<span class="searchTxt">业主姓名：</span>
+				<input type="text" id="owner" maxlength="18" placeholder="按业主姓名查询" v-model="ownerNameSearch" />
+				<span class="searchBtn" @click="searchOwner">点击查询</span>
+				<span class="addBtn" @click="openWin('ownerData','aaa')">+新增业主</span>
+			</div>
+			<!-- 内容主体区域 -->
+			<table class="layui-table">
+				<colgroup>
+					<col width="150">
+					<col width="200">
+					<col width="200">
+					<col width="150">
+					<col width="150">
+					<col>
+				</colgroup>
+				<thead>
+					<tr>
+						<th>业主姓名</th>
+						<th>住宅地址</th>
+						<th>身份证号</th>
+						<th>手机号</th>
+						<th>录入时间</th>
+						<th>操作</th>
+					</tr>
+				</thead>
+				<tbody v-if="ownerListData.length!=0">
+					<tr v-for="item in ownerListData">
+						<td class="ownerNameTd" v-text="item.ownerName"></td>
+						<td v-text="item.ownerInfo"></td>
+						<td v-text="item.ownerCart"></td>
+						<td v-text="item.ownerTel"></td>
+						<td v-text="item.update_Tm"></td>
+						<td>
+							<div class="layui-btn-container">
+								<button class="layui-btn layui-btn-radius layui-btn-sm" @click="openWin('ownerData',item.ownerID)">修改</button>
+								<button class="layui-btn layui-btn-radius layui-btn-sm layui-btn-normal" @click="openWin('propMoney',item.ownerID)">缴费</button>
+								<button class="layui-btn layui-btn-radius layui-btn-sm layui-btn-warm" @click="openWin('equRepair',item.ownerID)">报修</button>
+								<button class="layui-btn layui-btn-radius layui-btn-danger layui-btn-sm" @click="ownerDel(item.ownerID)">删除</button>
+							</div>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+			<div class="noData" v-if="ownerListData.length==0">
+				暂无数据！
+			</div>
+		</div>
+		<script src="../../Plugins/jquery-2.1.0.js"></script>
+		<script src="../../Plugins/layui/layui.js"></script>
+		<script src="../../Plugins/vue.js"></script>
+		<script src="../../js/common.js"></script>
+		<script>
+			var vm = new Vue({
+				el: "#container",
+				data: {
+					loginData: '',
+					ownerListData: [],
+					ownerNameSearch: ''
+				},
+				mounted: function() {
+					this.$nextTick(function() {
+						layui.use('layer', function() {
+							var layer = layui.layer;
+						});
+						setTimeout(function() {
+							vm.ownerName = query('ownerName') || '';
+							vm.getLoginData();
+							vm.isLogin();
+							vm.ownerList();
+						});
+					})
+				},
+				methods: {
+					//获取本地登录信息
+					getLoginData: function() {
+						if(localStorage.loginUrseData) {
+							vm.loginData = JSON.parse(localStorage.getItem('loginUrseData'));
+						}
+					},
+					//判断是否登录
+					isLogin: function() {
+						if(vm.loginData == '') {
+							window.open('../../login.html', '_self');
+						}
+					},
+					//查询管理员用户
+					searchOwner: function() {
+						if(vm.ownerNameSearch) {
+							/*js模糊查询*/
+							$("table tbody tr").hide();
+							$(".ownerNameTd").filter(":contains('" + vm.ownerNameSearch + "')").parent().show();
+						} else {
+							$("table tbody tr").show();
+							vm.ownerName = '';
+							vm.ownerList();
+						}
+					},
+					//获取业主列表
+					ownerList: function() {
+						if(vm.ownerName) {
+							var url = "http://localhost:8080/pro_Servers/owner/" + encodeURIComponent(vm.ownerName);
+						} else {
+							var url = "http://localhost:8080/pro_Servers/owner/";
+						}
+						$.ajax({
+							type: "GET",
+							url: url,
+							success: function(res) {
+								console.log(res);
+								if(res.status == 'ok') {
+									vm.ownerListData = res.infos;
+								} else {
+									layer.msg('列表获取失败！');
+								}
+							},
+							error: function() {
+								layer.msg('列表获取失败！');
+							}
+						});
+					},
+					//页面跳转
+					openWin: function(url, id) {
+						urlObj = {
+							'ownerData': 'ownerData.html?id=' + id,
+							'propMoney': '../propMoney/propMoney.html?id=' + id,
+							'equRepair': '../equRepair/equRepair.html?id=' + id,
+						}
+						window.open(urlObj[url]);
+					},
+					//删除业主
+					ownerDel: function(id) {
+						layer.confirm('你确定删除该业主吗?', {
+							icon: 2,
+							title: '提示'
+						}, function(index) {
+							var url = "http://localhost:8080/pro_Servers/owner/delete/" + id;
+							$.ajax({
+								type: "GET",
+								url: url,
+								success: function(res) {
+									console.log(res);
+									if(res.stuts == 'ok') {
+										vm.ownerList();
+										layer.close(index);
+									} else {
+										layer.msg('删除失败！');
+									}
+								},
+								error: function() {
+									layer.msg('删除失败！');
+								}
+							});
+						});
+					}
+				}
+			});
+		</script>
+	</body>
+
+</html>

@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>管理员信息修改</title>
+		<meta name="renderer" content="webkit">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+		<link rel="stylesheet" href="../../Plugins/layui/css/layui.css" media="all">
+		<style>
+			body {
+				min-height: 100vh;
+				background: url(../../img/ownerBG.jpg) no-repeat center center;
+				background-size: cover;
+			}
+			
+			.goIndex {
+				position: fixed;
+				top: 48px;
+				left: 30px;
+				width: 60px;
+				height: 30px;
+				line-height: 30px;
+				color: forestgreen;
+				padding: 0 10px;
+				border-radius: 6px;
+				background-color: #FFF;
+				opacity: 0.5;
+				cursor: pointer;
+			}
+			
+			.goIndex:hover {
+				opacity: 0.7;
+			}
+			
+			.container {
+				width: 800px;
+				padding: 15px;
+				padding-right: 50px;
+				text-align: center;
+				position: absolute;
+				margin: 0 auto;
+				top: 0;
+				right: 0;
+				bottom: 0;
+				left: 0;
+			}
+			
+			.container .propMoneyBg {
+				width: 100%;
+				height: 100%;
+				background-color: #CCC;
+				opacity: 0.7;
+				z-index: -1;
+				position: absolute;
+				top: 0;
+				left: 0;
+			}
+			
+			.container .redStar {
+				font-size: 20px;
+				color: #EA2000;
+			}
+			
+			.container h2 {
+				font-size: 30px;
+				line-height: 30px;
+				margin-top: 35px;
+				margin-bottom: 45px;
+				letter-spacing: 5px;
+			}
+			
+			.container input:hover {
+				border: 1px solid #00cc77!important;
+			}
+			
+			.container .sexDiv {
+				height: 38px;
+				background-color: #FFF;
+			}
+			
+			.container button {
+				margin: 10px 25px;
+			}
+			
+			.roleDiv {
+				height: 38px;
+				line-height: 38px;
+				text-align: center;
+				background-color: #FFF;
+			}
+			
+			.roleDiv span {
+				width: 70px;
+				height: 20px;
+				line-height: 20px;
+				padding: 3px 10px;
+				margin-right: 6px;
+				color: #333;
+				border-radius: 6px;
+				background-color: #afc99c;
+			}
+			
+			.roleDiv .iconDel {
+				display: none;
+				font-weight: 600;
+				color: red;
+				margin-right: 5px;
+				cursor: pointer;
+			}
+			
+			.roleDiv span:hover {
+				background-color: #96B97D;
+			}
+			
+			.roleDiv span:hover .iconDel {
+				display: inline-block;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div id="container" class="container">
+			<div class="goIndex" onclick="window.open('../../index.html','_self')">返回首页</div>
+			<div class="propMoneyBg"></div>
+			<h2>管理员信息修改</h2>
+			<form class="layui-form" action="">
+				<div class="layui-form-item">
+					<label class="layui-form-label"><span class="redStar">*</span>账号</label>
+					<div class="layui-input-block">
+						<input type="text" maxlength="12" autocomplete="off" placeholder="请填写账号" class="layui-input" v-model="name">
+					</div>
+				</div>
+				<div class="layui-form-item">
+					<label class="layui-form-label"><span class="redStar">*</span>手机</label>
+					<div class="layui-input-block">
+						<input type="tel" autocomplete="off" placeholder="请填写用手机号" class="layui-input" v-model="phone">
+					</div>
+				</div>
+				<div class="layui-form-item">
+					<label class="layui-form-label"><span class="redStar">*</span>邮箱</label>
+					<div class="layui-input-block">
+						<input type="tel" autocomplete="off" placeholder="请填写用邮箱" class="layui-input" v-model="email">
+					</div>
+				</div>
+				<div class="layui-form-item">
+					<label class="layui-form-label"><span class="redStar">*</span>密码</label>
+					<div class="layui-input-block">
+						<input type="tel" autocomplete="off" placeholder="请填写用密码" class="layui-input" v-model="password">
+					</div>
+				</div>
+				<div class="layui-form-item">
+					<label class="layui-form-label"><span class="redStar">*</span>角色</label>
+					<div class="layui-input-block roleDiv">
+						<span v-if="userRoleArr" v-for="role in userRoleArr"><i class="layui-icon iconDel" @click="userDelRole(role.userroleID)">&#x1006;</i>{{role.roleName}}</span>
+					</div>
+				</div>
+				<div class="layui-form-item">
+					<button class="layui-btn" type="button" lay-filter="demo2" @click="reviseUser">保存</button>
+					<button class="layui-btn" type="reset" lay-filter="demo2">重置</button>
+				</div>
+			</form>
+		</div>
+		<script src="../../Plugins/jquery-2.1.0.js"></script>
+		<script src="../../Plugins/layui/layui.js"></script>
+		<script src="../../Plugins/vue.js"></script>
+		<script src="../../js/common.js"></script>
+		<script>
+			layui.use(['form', 'layedit', 'laydate'], function() {
+				var form = layui.form,
+					layer = layui.layer,
+					layedit = layui.layedit,
+					laydate = layui.laydate;
+			});
+
+			var vm = new Vue({
+				el: "#container",
+				data: {
+					name: '',
+					phone: '',
+					email: '',
+					password: '',
+					loginData: '',
+					userId: '', //管理员id
+					userIdData: '', //根据id管理员信息
+					userRoleArr: ''
+				},
+				mounted: function() {
+					this.$nextTick(function() {
+						vm.getLoginData();
+						vm.isLogin();
+						vm.userData();
+					})
+				},
+				methods: {
+					//获取本地登录信息
+					getLoginData: function() {
+						if(localStorage.loginUrseData) {
+							vm.loginData = JSON.parse(localStorage.getItem('loginUrseData'));
+						}
+					},
+					//判断是否登录
+					isLogin: function() {
+						if(vm.loginData == '') {
+							window.open('../login.html', '_self');
+						}
+					},
+					//获取管理员信息
+					userData: function() {
+						vm.userId = query('id') || '';
+						if(vm.userId) {
+							var url = "http://localhost:8080/pro_Servers/users/" + vm.userId;
+
+							$.ajax({
+								type: "GET",
+								url: url,
+								success: function(res) {
+									console.log(res);
+									if(res.status == 'ok') {
+										vm.userIdData = res.t;
+										vm.name = vm.userIdData.name;
+										vm.phone = vm.userIdData.phone;
+										vm.email = vm.userIdData.email;
+										vm.password = vm.userIdData.password;
+										vm.userRoleArr = res.infos;
+										//权限数组去重
+										/*if(res.infos.length != 0) {
+											var newRolrArr = []
+											var obj = {};
+											for(i = 0; i < res.infos.length; i++) {
+												if(!obj[res.infos[i].id]) { //如果能查找到，证明数组元素重复了
+													obj[res.infos[i].id] = 1;
+													newRolrArr.push(res.infos[i]);
+												}
+											}
+											vm.userRoleArr = newRolrArr;
+										}*/
+									}
+								},
+								error: function() {
+									layer.msg('获取信息失败！');
+								}
+							});
+						}
+					},
+					//删除管理员角色
+					userDelRole: function(id) {
+						var url = "http://localhost:8080/pro_Servers/users/userrole/" + id;
+
+						$.ajax({
+							type: "DELETE",
+							url: url,
+							success: function(res) {
+								if(res.status == 'ok') {
+									layer.msg('删除成功！');
+									vm.userData();
+								} else {
+									layer.msg('删除失败！');
+								}
+							}
+						});
+					},
+					//修改管理员信息
+					reviseUser: function() {
+						var url = "http://localhost:8080/pro_Servers/users/update";
+
+						var obj = {
+							"id": vm.userId,
+							"Name": vm.name,
+							"Password": vm.password,
+							"Email": vm.email,
+							"Phone": vm.phone
+						}
+
+						if(!obj.Name) {
+							layer.msg('请填写昵称！');
+							return;
+						} else if(!obj.Password) {
+							layer.msg('请填写密码！');
+							return;
+						} else if(!obj.Phone) {
+							layer.msg('请填写手机号！');
+							return;
+						} else if(!obj.Email) {
+							layer.msg('请填写邮箱！');
+							return;
+						}
+
+						$.ajax({
+							type: "POST",
+							url: url,
+							data: obj,
+							success: function(res) {
+								if(res.status == 'ok') {
+									layer.msg('更新成功！');
+									setTimeout(function() {
+										window.open('../adminPerm/adminList.html', '_self');
+									}, 1200);
+								} else {
+									layer.msg('更新失败！');
+								}
+							}
+						});
+					}
+				}
+			});
+		</script>
+
+	</body>
+
+</html>

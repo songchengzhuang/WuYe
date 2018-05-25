@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="ZH-cn">
+
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta http-equiv="X-UA-Compatible" content="ie=edge">
+		<title>首页</title>
+		<link rel="stylesheet" href="Plugins/layui/css/layui.css">
+		<style type="text/css">
+			html,
+			body {
+				min-height: 100vh;
+				overflow: hidden;
+			}
+			
+			.container {
+				min-height: 100vh;
+				position: relative;
+				left: 0;
+				top: 0;
+				box-sizing: border-box;
+			}
+			
+			.container .indexContDiv {
+				min-height: 100vh;
+				/*CSS3弹性盒子*/
+				display: -ms-flex;
+				display: -webkit-flex;
+				display: flex;
+				-webkit-flex-direction: column;
+				-ms-flex-direction: column;
+				flex-direction: column;
+				-ms-flex-align: center;
+				-webkit-align-items: center;
+				-webkit-box-align: center;
+				align-items: center;
+				-webkit-justify-content: center;
+				justify-content: center;
+			}
+			
+			.container .indexContBg {
+				position: absolute;
+				top: 0px;
+				left: 0px;
+				right: 0px;
+				bottom: 0px;
+				background: url(img/indexBG.jpg) no-repeat center center;
+				background-size: cover;
+				z-index: -1;
+			}
+			
+			.container .indexTit {
+				font-size: 18px;
+				line-height: 18px;
+				color: #FFF;
+				position: absolute;
+				top: 20px;
+				left: 23px;
+			}
+			
+			.container .indexP {
+				font-size: 18px;
+				line-height: 18px;
+				color: #FFF;
+				position: absolute;
+				top: 20px;
+				right: 23px;
+			}
+			
+			.container .indexP>span {
+				margin-left: 15px;
+				cursor: pointer;
+			}
+			
+			.container .indexP>span:last-child:hover {
+				color: #AAA;
+			}
+			
+			.container .indexHead {
+				font-size: 75px;
+				font-family: 'STHupo', 'Hiragino Sans GB', 'Microsoft Yahei UI', 'Microsoft Yahei', '微软雅黑';
+				line-height: 75px;
+				color: #FFF;
+				letter-spacing: 5px;
+				position: relative;
+				top: -10px;
+			}
+			
+			.container .indexSearch {
+				position: relative;
+				top: 70px;
+			}
+			
+			.container .indexSearch>input {
+				float: left;
+				width: 626px;
+				height: 55px;
+				color: #333;
+				font-size: 24px;
+				padding-left: 20px;
+				border: none;
+			}
+			/*placeholder样式*/
+			
+			input::-webkit-input-placeholder,
+			textarea::-webkit-input-placeholder {
+				color: #CCCCCC;
+				font-size: 1.4rem;
+			}
+			
+			input:-moz-placeholder,
+			textarea:-moz-placeholder {
+				color: #CCCCCC;
+				font-size: 1.4rem;
+			}
+			
+			input::-moz-placeholder,
+			textarea::-moz-placeholder {
+				color: #CCCCCC;
+				font-size: 1.4rem;
+			}
+			
+			input:-ms-input-placeholder,
+			textarea:-ms-input-placeholder {
+				color: #CCCCCC;
+				font-size: 1.4rem;
+			}
+			
+			.container .indexSearch>span {
+				display: inline-block;
+				width: 127px;
+				height: 55px;
+				line-height: 55px;
+				font-size: 18px;
+				color: #FFF;
+				text-align: center;
+				background-color: #00b86b;
+				cursor: pointer;
+			}
+			
+			.container .indexSearch>span:hover {
+				background-color: #00cc77;
+			}
+			
+			.container .indexModel {
+				width: 1100px;
+				height: 250px;
+				position: relative;
+				top: 140px;
+				/*CSS3弹性盒子*/
+				display: -ms-flex;
+				display: -webkit-flex;
+				display: flex;
+				-webkit-flex-direction: row;
+				-ms-flex-direction: row;
+				flex-direction: row;
+				-ms-flex-align: center;
+				-webkit-align-items: center;
+				-webkit-box-align: center;
+				align-items: center;
+				-webkit-justify-content: space-around;
+				justify-content: space-around;
+			}
+			
+			.container .indexModel div {
+				width: 200px;
+				height: 180px;
+				padding: 10px;
+				text-align: center;
+				border-radius: 6px;
+				background-color: #FFF;
+				opacity: 0.8;
+				cursor: pointer;
+			}
+			
+			.container .indexModel div:hover {
+				box-shadow: 5px 5px 45px 2px #ccc;
+			}
+			
+			.container .indexModel div>img {
+				width: 100px;
+				height: 100px;
+			}
+			
+			.container .indexModel div>p {
+				font-size: 20px;
+				line-height: 16px;
+				color: #000;
+				letter-spacing: 5px;
+				position: relative;
+				top: 30px;
+			}
+			
+			.container .indexModel div:hover img {
+				position: relative;
+				top: -3px;
+			}
+			
+			.container .indexModel div:hover p {
+				color: #00cc77;
+			}
+			
+			.indexP .indexSpan01 {
+				color: #00CC77;
+			}
+			
+			.indexP .indexSpan02 {
+				color: #00ff95;
+			}
+			
+			.indexP .indexSpan03 {
+				color: #EA2000;
+			}
+			
+			.echartsDiv {
+				width: 280px;
+				height: 342px;
+				border-radius: 6px;
+				background-color: #FFF;
+				opacity: 0.8;
+				position: absolute;
+				top: 50px;
+				left: 23px;
+			}
+			
+			.echartsData {
+				width: 95%;
+				height: 100%;
+				margin: 0 auto;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div id="container" class="container">
+			<div class="indexContBg"></div>
+			<div class="indexContDiv">
+				<span class="indexTit">小区物业后台管理系统</span>
+				<p class="indexP">
+					<span class="indexSpan01" v-if='loginData' v-text="'欢迎管理员：'+loginData.name"></span>
+					<span class="indexSpan02" v-if='!loginData' @click="login">登录</span>
+					<span class="indexSpan03" v-if='loginData' @click="tuichu">退出</span>
+				</p>
+				<!--图表-->
+				<div id="echartsDiv" class="echartsDiv">
+					<div id="echartsData" class="echartsData"></div>
+				</div>
+				<h1 class="indexHead">连接每个家的故事</h1>
+				<div class="indexSearch">
+					<input type="text" id="owner" maxlength="18" placeholder="按照准确的业主姓名查询" v-model="ownerName" />
+					<span @click="searchOwner">查询业主</span>
+				</div>
+				<div class="indexModel">
+					<a href="model/ownerData/ownerList.html">
+						<div class="modelDiv03">
+							<img src="img/userData.png" />
+							<p>业主信息</p>
+						</div>
+					</a>
+					<a href="model/propMoney/propMoneyList.html" v-if="propModel">
+						<div class="modelDiv01">
+							<img src="img/userPay.png" />
+							<p>物业缴费</p>
+						</div>
+					</a>
+					<a href="model/equRepair/equRepairList.html" v-if="repModel">
+						<div class="modelDiv02">
+							<img src="img/equRepair.png" />
+							<p>设备报修</p>
+						</div>
+					</a>
+					<a href="model/adminPerm/adminList.html" v-if="adminModel">
+						<div class="modelDiv04">
+							<img src="img/adminPerm.png" />
+							<p>权限管理</p>
+						</div>
+					</a>
+				</div>
+			</div>
+		</div>
+
+		<script src="Plugins/jquery-2.1.0.js"></script>
+		<script src="Plugins/layui/layui.js"></script>
+		<script src="Plugins/echarts.min.js"></script>
+		<script src="Plugins/vue.js"></script>
+		<script type="text/javascript">
+			var vm = new Vue({
+				el: "#container",
+				data: {
+					propModel: false, //缴费模块权限
+					repModel: false, //维修模块权限
+					adminModel: false, //管理模块权限
+					loginData: '', //本地数据
+					ownerName: '',
+					propListData: 0, //物业费
+					repListData: 0 //报修费
+				},
+				mounted: function() {
+					this.$nextTick(function() {
+						vm.getLoginData();
+						vm.isLogin();
+						vm.propList();
+						vm.repairList();
+					})
+				},
+				methods: {
+					//获取登录数据
+					getLoginData: function() {
+						if(localStorage.loginUrseData) {
+							vm.loginData = JSON.parse(localStorage.getItem('loginUrseData'));
+							console.log(vm.loginData);
+							for(item in vm.loginData.per) {
+								if(vm.loginData.per[item].id == 10000) {
+									vm.propModel = true; //缴费模块权限
+								}
+
+								if(vm.loginData.per[item].id == 10001) {
+									vm.repModel = true; //维修模块权限
+								}
+
+								if(vm.loginData.per[item].id == 10002) {
+									vm.adminModel = true; //管理模块权限
+								}
+							}
+						}
+					},
+					//获取缴费列表
+					propList: function() {
+						var url = "http://localhost:8080/pro_Servers/charge/";
+						$.ajax({
+							type: "GET",
+							url: url,
+							success: function(res) {
+								if(res.status == 'ok') {
+									for(var i = 0; i < res.infos.length; i++) {
+										vm.propListData = vm.propListData + (res.infos[i].chargeMoney - 0);
+									}
+									if(vm.propListData != 0 && vm.repListData != 0) {
+										echarsData();
+									}
+								} else {
+									vm.propListData = [];
+									layer.msg('暂无数据！');
+								}
+							},
+							error: function() {
+								layer.msg('列表获取失败！');
+							}
+						});
+					},
+					//获取报修列表
+					repairList: function() {
+						var url = "http://localhost:8080/pro_Servers/repair/";
+						$.ajax({
+							type: "GET",
+							url: url,
+							success: function(res) {
+								console.log(res);
+								if(res.status == 'ok') {
+									for(var i = 0; i < res.infos.length; i++) {
+										vm.repListData = vm.repListData + (res.infos[i].repairTime - 0);
+									}
+									if(vm.propListData != 0 && vm.repListData != 0) {
+										echarsData();
+									}
+								} else {
+									vm.repListData = '';
+									layer.msg('暂无数据！');
+								}
+							},
+							error: function() {
+								layer.msg('列表获取失败！');
+							}
+						});
+					},
+					//退出
+					tuichu: function() {
+						localStorage.setItem('loginUrseData', '');
+						vm.loginData = '';
+						vm.isLogin();
+					},
+					//登录
+					login: function() {
+						window.open('login.html', '_self');
+					},
+					//判断是否登录
+					isLogin: function() {
+						if(vm.loginData == '') {
+							window.open('login.html', '_self');
+						}
+					},
+					//查找业主
+					searchOwner: function() {
+						window.open('model/ownerData/ownerList.html?ownerName=' + vm.ownerName, '_self');
+					}
+				}
+			});
+
+			function echarsData() {
+				// 基于准备好的dom，初始化echarts实例
+				var myChart = echarts.init(document.getElementById('echartsData'));
+				// 指定图表的配置项和数据
+				var option = {
+					title: {
+						text: '费用统计'
+					},
+					barWidth: 45, //柱图宽度
+					barMaxWidth: 45, //最大宽度
+					tooltip: {},
+					legend: {
+						data: ['费用/元']
+					},
+					xAxis: {
+						data: ["物业费", "报修费"]
+					},
+					yAxis: {},
+					series: [{
+						name: '费用/元',
+						type: 'bar',
+						label: {
+							normal: {
+								show: true,
+								position: 'inside'
+							}
+						},
+						data: [vm.propListData, vm.repListData]
+					}]
+				};
+				// 使用刚指定的配置项和数据显示图表。
+				myChart.setOption(option);
+			}
+		</script>
+	</body>
+
+</html>

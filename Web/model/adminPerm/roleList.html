@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+		<title>角色列表</title>
+		<link rel="stylesheet" href="../../Plugins/layui/css/layui.css">
+		<style type="text/css">
+			body {
+				min-height: 100vh;
+				background: url(../../img/adminBG.jpg) no-repeat center center;
+				background-size: cover;
+			}
+			
+			.goIndex {
+				position: fixed;
+				top: 48px;
+				left: 30px;
+				width: 60px;
+				height: 30px;
+				line-height: 30px;
+				color: forestgreen;
+				padding: 0 10px;
+				border-radius: 6px;
+				background-color: #FFF;
+				opacity: 0.5;
+				cursor: pointer;
+			}
+			
+			.goIndex:hover {
+				opacity: 0.7;
+			}
+			
+			.container {
+				width: 1200px;
+				padding: 15px;
+				text-align: center;
+				position: absolute;
+				margin: 0 auto;
+				top: 0;
+				right: 0;
+				bottom: 0;
+				left: 0;
+			}
+			
+			.container .search {
+				width: 100%;
+				height: 38px;
+				/*CSS3弹性盒子*/
+				display: -ms-flex;
+				display: -webkit-flex;
+				display: flex;
+				-webkit-flex-direction: row;
+				-ms-flex-direction: row;
+				flex-direction: row;
+				-ms-flex-align: center;
+				-webkit-align-items: center;
+				-webkit-box-align: center;
+				align-items: center;
+			}
+			
+			.container .search span {
+				display: inline-block;
+				width: 120px;
+				height: 38px;
+				line-height: 38px;
+				font-size: 18px;
+				color: #FFF;
+				text-align: center;
+				background-color: #e6e6e6;
+				cursor: pointer;
+			}
+			
+			.container .search .searchTxt {
+				font-weight: 600;
+				color: #333;
+			}
+			
+			.container .search .searchBtn {
+				background-color: #00b86b;
+				cursor: pointer;
+			}
+			
+			.container .search .searchBtn:hover {
+				background-color: #00cc77;
+			}
+			
+			.container .search input {
+				float: left;
+				/*width: 626px;*/
+				height: 38px;
+				color: #333;
+				font-size: 18px;
+				padding-left: 20px;
+				border: none;
+			}
+			
+			.container .propMoneyBg {
+				width: 100%;
+				height: 100%;
+				background-color: #CCC;
+				opacity: 0.7;
+				z-index: -1;
+				position: absolute;
+				top: 0;
+				left: 0;
+			}
+			
+			.container h2 {
+				font-size: 30px;
+				line-height: 30px;
+				margin-top: 35px;
+				margin-bottom: 45px;
+				letter-spacing: 5px;
+			}
+			
+			.container table th {
+				font-weight: 600;
+				color: #333;
+				text-align: center;
+			}
+			
+			.container button {
+				margin: 2px!important;
+			}
+			
+			.container .roleTd>span {
+				margin-right: 10px;
+			}
+			
+			.container .addBtn {
+				margin-left: 15px;
+				background-color: #D84C29!important;
+				cursor: pointer;
+			}
+			
+			.container .addBtn:hover {
+				background-color: #dc5d3d!important;
+			}
+			
+			.tapWinDiv {
+				display: none;
+				width: 100%;
+				height: 100%;
+			}
+			
+			.tapWinDiv .tapBody {
+				padding: 15px;
+			}
+			
+			.tapWinDiv .checkboxDiv {
+				margin-left: 110px;
+			}
+			
+			.tapWinDiv .checkboxItem {
+				float: left;
+				width: 100px;
+				height: 30px;
+				padding: 0 10px;
+				padding-top: 13px;
+				margin-right: 10px;
+				margin-bottom: 10px;
+				border-radius: 10px;
+				background-color: #e5ffe5;
+			}
+			
+			.tapWinDiv .checkboxItem span {
+				letter-spacing: 1px;
+				margin-left: 5px;
+				position: relative;
+				top: -2px;
+			}
+			
+			.tapWinDiv .checkboxItem:hover {
+				background-color: #ffe5e5;
+			}
+			
+			.tapWinDiv .saveBtn {
+				width: 80px;
+				height: 30px;
+				line-height: 30px;
+				margin: 0 auto;
+			}
+			
+			.iconAdd {
+				color: #00B86B;
+				cursor: pointer;
+			}
+			
+			.iconDel {
+				color: #EA2000;
+				cursor: pointer;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div id="container" class="container">
+			<div class="goIndex" onclick="window.open('../../index.html','_self')">返回首页</div>
+			<div class="propMoneyBg"></div>
+			<h2>角色列表</h2>
+			<div class="search">
+				<span class="searchTxt">角色名称：</span>
+				<input type="text" id="owner" maxlength="18" placeholder="按角色名称查询" v-model="roleNameSearch" />
+				<span class="searchBtn" @click="searchRole">点击查询</span>
+				<span class="addBtn" @click="tapWin('add')">+ 新增角色</span>
+			</div>
+			<!-- 内容主体区域 -->
+			<table class="layui-table">
+				<colgroup>
+					<col v-if="userId!='aaa'" width="60">
+					<col width="130">
+					<!--<col>-->
+					<col width="150">
+					<col width="200">
+				</colgroup>
+				<thead>
+					<tr>
+						<th v-if="userId!='aaa'">选择</th>
+						<th>角色名称</th>
+						<!--<th>拥有权限</th>-->
+						<th>描述</th>
+						<th>操作</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr v-for="item in roleListData">
+						<td v-if="userId!='aaa'">
+							<i class="layui-icon iconAdd" @click="userAddRole(item.id)">&#xe618;</i>
+							<!--<i class="layui-icon iconDel" @click="userDelRole(item.id)">&#x1006;</i>-->
+						</td>
+						<td class="roleNameTd" v-text="item.roleName"></td>
+						<!--<td class="roleTd">
+							<span>业主信息</span><span>物业缴费</span><span>设备报修</span><span>权限管理</span>
+						</td>-->
+						<td v-text="item.message"></td>
+						<td>
+							<div class="layui-btn-container">
+								<!--<button class="layui-btn layui-btn-radius layui-btn-sm" @click="tapWin('add',item.id)">修改</button>-->
+								<button class="layui-btn layui-btn-radius layui-btn-sm layui-btn-normal" @click="tapWin(item.id,item.id)">+权限</button>
+								<button class="layui-btn layui-btn-radius layui-btn-danger layui-btn-sm" @click="delRole(item.id)">删除</button>
+							</div>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+			<!--弹窗-->
+			<div id="tapWinDiv" class="tapWinDiv">
+				<div class="tapBody">
+					<div class="layui-form-item" v-if="typeId=='add'">
+						<label class="layui-form-label">角色名称</label>
+						<div class="layui-input-block">
+							<input type="text" maxlength="10" autocomplete="off" placeholder="请填写角色名称" class="layui-input" v-model="roleName">
+						</div>
+					</div>
+					<div class="layui-form-item" v-if="typeId=='add'">
+						<label class="layui-form-label">角色描述</label>
+						<div class="layui-input-block">
+							<input type="text" maxlength="10" autocomplete="off" placeholder="请填写角色名称" class="layui-input" v-model="Message">
+						</div>
+					</div>
+					<div class="layui-form-item" v-if="typeId!='add'">
+						<label class="layui-form-label">权限选择</label>
+						<div class="checkboxDiv">
+							<div class="checkboxItem" v-for="per in perList">
+								<i class="layui-icon iconAdd" @click="roleAddPer(per.id)">&#xe618;</i>
+								<span v-text="per.per_Name"></span>
+							</div>
+						</div>
+					</div>
+					<button class="layui-btn layui-btn-radius saveBtn" @click="addRole" v-if="typeId=='add'">保 存</button>
+				</div>
+			</div>
+		</div>
+		<script src="../../Plugins/jquery-2.1.0.js"></script>
+		<script src="../../Plugins/layui/layui.js"></script>
+		<script src="../../Plugins/vue.js"></script>
+		<script src="../../js/common.js"></script>
+		<script>
+			layui.use('layer', function() {
+				var layer = layui.layer;
+				var form = layui.form;
+			});
+
+			function openWin(url) {
+				urlObj = {
+					'ownerData': 'ownerData.html',
+					'propMoney': '../propMoney/propMoney.html',
+					'equRepair': '../equRepair/equRepair.html',
+				}
+				window.open(urlObj[url]);
+			}
+
+			var vm = new Vue({
+				el: "#container",
+				data: {
+					userId: '',
+					roleId: '',
+					roleName: '',
+					Message: '',
+					roleNameSearch: '',
+					typeId: '',
+					roleData: '',
+					roleListData: [], //角色列表
+					perList: [] //权限列表
+				},
+				mounted: function() {
+					this.$nextTick(function() {
+						layui.use('layer', function() {
+							var layer = layui.layer;
+							var form = layui.form;
+						});
+						setTimeout(function() {
+							vm.userId = query('id') || '';
+							vm.getLoginData();
+							vm.isLogin();
+							vm.roleList();
+							vm.allPer();
+						});
+					})
+				},
+				methods: {
+					//获取本地登录信息
+					getLoginData: function() {
+						if(localStorage.loginUrseData) {
+							vm.loginData = JSON.parse(localStorage.getItem('loginUrseData'));
+						}
+					},
+					//判断是否登录
+					isLogin: function() {
+						if(vm.loginData == '') {
+							window.open('../../login.html', '_self');
+						}
+					},
+					//弹窗
+					tapWin: function(typeId, id) {
+						vm.typeId = typeId;
+						vm.roleId = id;
+						layer.open({
+							type: 1,
+							title: '新增权限',
+							area: ['600px', '500px'],
+							content: $('#tapWinDiv')
+						})
+					},
+					//获取角色列表
+					roleList: function() {
+						var url = "http://localhost:8080/pro_Servers/role/";
+
+						$.ajax({
+							type: "GET",
+							url: url,
+							success: function(res) {
+								console.log(res);
+								if(res.status == 'ok') {
+									vm.roleListData = res.infos;
+								} else {
+									layer.msg('获取信息失败！');
+								}
+							},
+							error: function() {
+								layer.msg('获取信息失败！');
+							}
+						});
+					},
+					//添加角色
+					addRole: function() {
+						var url = "http://localhost:8080/pro_Servers/role/";
+
+						var obj = {
+							"roleName": vm.roleName,
+							"Message": vm.Message
+						}
+
+						if(!obj.roleName) {
+							layer.msg('请填写角色名字！');
+							return;
+						}
+
+						$.ajax({
+							type: "POST",
+							url: url,
+							data: obj,
+							success: function(res) {
+								layer.closeAll();
+								vm.roleList();
+							},
+							error: function() {
+								layer.msg('添加角色失败！');
+							}
+						});
+					},
+					//查询管理员用户
+					searchRole: function() {
+						if(vm.roleNameSearch) {
+							/*js模糊查询*/
+							$("table tbody tr").hide();
+							$(".roleNameTd").filter(":contains('" + vm.roleNameSearch + "')").parent().show();
+						} else {
+							$("table tbody tr").show();
+						}
+					},
+					//获取全部权限列表
+					allPer: function() {
+						var url = "http://localhost:8080/pro_Servers/per/";
+
+						$.ajax({
+							type: "GET",
+							url: url,
+							success: function(res) {
+								console.log(res);
+								if(res.status == 'ok') {
+									vm.perList = res.infos;
+								} else {
+									layer.msg('获取权限失败！');
+								}
+							},
+							error: function() {
+								layer.msg('获取权限失败！');
+							}
+						});
+					},
+					//角色删除
+					delRole: function(id) {
+						layer.confirm('你确定删除该角色吗?', {
+							icon: 2,
+							title: '删除'
+						}, function(index) {
+							var url = "http://localhost:8080/pro_Servers/role/" + id;
+							$.ajax({
+								type: "DELETE",
+								url: url,
+								success: function(res) {
+									console.log(res);
+									if(res.status == 'ok') {
+										vm.roleList();
+									} else {
+										layer.msg('删除失败！');
+									}
+								},
+								error: function() {
+									layer.msg('删除失败！');
+								}
+							});
+
+							layer.close(index);
+						});
+					},
+					//为管理员添加角色
+					userAddRole: function(roleid) {
+						vm.userId = query('id') || '';
+						var url = "http://localhost:8080/pro_Servers/role/" + vm.userId + "/" + roleid;
+
+						$.ajax({
+							type: "GET",
+							url: url,
+							success: function(res) {
+								console.log(res);
+								if(res.status == 'ok') {
+									layer.msg('添加角色成功！');
+								} else {
+									layer.msg('添加角色失败！');
+								}
+							},
+							error: function() {
+								layer.msg('添加角色失败！');
+							}
+						});
+					},
+					//为管理员删除角色
+					userDelRole: function(roleid) {
+						var userId = query('id');
+						var url = "http://localhost:8080/pro_Servers/users/userrole/" + roleid;
+
+						$.ajax({
+							type: "GET",
+							url: url,
+							success: function(res) {
+								console.log(res);
+								if(res.status == 'ok') {
+									//
+								} else {
+									layer.msg('添加角色失败！');
+								}
+							},
+							error: function() {
+								layer.msg('添加角色失败！');
+							}
+						});
+					},
+					//为角色添加权限
+					roleAddPer: function(perid) {
+						var url = "http://localhost:8080/pro_Servers/per/" + vm.roleId + "/" + perid;
+
+						$.ajax({
+							type: "GET",
+							url: url,
+							success: function(res) {
+								console.log(res);
+								if(res.status == 'ok') {
+									layer.msg('添加权限成功！');
+								} else {
+									layer.msg('添加权限失败！');
+								}
+							},
+							error: function() {
+								layer.msg('添加角色失败！');
+							}
+						});
+					}
+				}
+			});
+		</script>
+	</body>
+
+</html>

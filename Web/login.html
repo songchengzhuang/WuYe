@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="ZH-cn">
+
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta http-equiv="X-UA-Compatible" content="ie=edge">
+		<title>用户登录</title>
+		<link rel="stylesheet" href="Plugins/layui/css/layui.css">
+		<link rel="stylesheet" href="css/login.css">
+	</head>
+
+	<body>
+		<div id="container" class="kit-login">
+			<div class="kit-login-bg"></div>
+			<div class="kit-login-wapper">
+				<h1 class="kit-login-slogan">欢迎使用 <br>小区物业后台管理系统</h1>
+				<div class="kit-login-form">
+					<h4 class="kit-login-title">用户登录</h4>
+					<form class="layui-form">
+						<div class="kit-login-row">
+							<div class="kit-login-col">
+								<i class="layui-icon">&#xe63b;</i>
+								<span class="kit-login-input">
+                <input type="text" maxlength="12" lay-verify="required" placeholder=" 请输入账号" v-model="name"/>
+              </span>
+							</div>
+							<div class="kit-login-col"></div>
+						</div>
+						<div class="kit-login-row">
+							<div class="kit-login-col">
+								<i class="layui-icon">&#xe642;</i>
+								<span class="kit-login-input">
+                <input type="password" maxlength="12" lay-verify="required" placeholder=" 请输入密码" v-model="password"/>
+              </span>
+							</div>
+							<div class="kit-login-col"></div>
+						</div>
+						<div class="kit-login-row">
+							<button class="layui-btn kit-login-btn" type="button" lay-filter="login_hash" @click="denglv">登  录</button>
+						</div>
+						<div class="kit-login-row" style="margin-bottom:0;">
+							<a href="logreg.html" style="color: rgb(153, 153, 153); text-decoration: none; font-size: 13px;" id="login">没有账号去注册</a>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+
+		<script src="Plugins/jquery-2.1.0.js"></script>
+		<script src="Plugins/layui/layui.js"></script>
+		<script src="Plugins/vue.js"></script>
+		<script>
+			layui.use(['form', 'layedit', 'laydate'], function() {
+				var form = layui.form,
+					layer = layui.layer,
+					layedit = layui.layedit,
+					laydate = layui.laydate;
+			});
+
+			var vm = new Vue({
+				el: "#container",
+				data: {
+					name: "",
+					password: "",
+					loginData: ''
+				},
+				mounted: function() {
+					this.$nextTick(function() {
+						if(localStorage.loginUrseData) {
+							console.log(JSON.parse(localStorage.getItem('loginUrseData')));
+						}
+					})
+				},
+				methods: {
+					//获取json 数据
+					denglv: function() {
+						var url = "http://localhost:8080/pro_Servers/users/login/" + encodeURIComponent(vm.name) + "/" + encodeURIComponent(vm.password);
+						var obj = {
+							"Name": vm.name,
+							"Password": vm.password
+						}
+
+						if(!obj.Name) {
+							layer.msg('请填写昵称！');
+							return
+						} else if(!obj.Password) {
+							layer.msg('请填写密码！');
+							return
+						}
+						console.log(obj);
+
+						$.ajax({
+							type: "POST",
+							url: url,
+							data: obj,
+							success: function(res) {
+								if(res.status == 'ok') {
+									layer.msg('登录成功！');
+									vm.loginData = res.t;
+									vm.saveUser();
+									setTimeout(function() {
+										window.open('index.html', '_self');
+									}, 1500);
+								} else {
+									layer.msg('登录失败！');
+								}
+							},
+							error: function() {
+								layer.msg('登录失败！');
+							}
+						});
+					},
+					saveUser: function() {
+						//本地存储数据  
+						localStorage.setItem('loginUrseData', JSON.stringify(vm.loginData));
+					}
+				}
+			});
+		</script>
+	</body>
+
+</html>

@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>业主信息单</title>
+		<meta name="renderer" content="webkit">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+		<link rel="stylesheet" href="../../Plugins/layui/css/layui.css" media="all">
+		<style>
+			body {
+				min-height: 100vh;
+				background: url(../../img/ownerBG.jpg) no-repeat center center;
+				background-size: cover;
+			}
+			
+			.goIndex {
+				position: fixed;
+				top: 48px;
+				left: 30px;
+				width: 60px;
+				height: 30px;
+				line-height: 30px;
+				color: forestgreen;
+				padding: 0 10px;
+				border-radius: 6px;
+				background-color: #FFF;
+				opacity: 0.5;
+				cursor: pointer;
+			}
+			
+			.goIndex:hover {
+				opacity: 0.7;
+			}
+			
+			.container {
+				width: 800px;
+				padding: 15px;
+				text-align: center;
+				position: absolute;
+				margin: 0 auto;
+				top: 0;
+				right: 0;
+				bottom: 0;
+				left: 0;
+			}
+			
+			.container .propMoneyBg {
+				width: 100%;
+				height: 100%;
+				background-color: #CCC;
+				opacity: 0.7;
+				z-index: -1;
+				position: absolute;
+				top: 0;
+				left: 0;
+			}
+			
+			.container .redStar {
+				font-size: 20px;
+				color: #EA2000;
+			}
+			
+			.container h2 {
+				font-size: 30px;
+				line-height: 30px;
+				margin-top: 35px;
+				margin-bottom: 45px;
+				letter-spacing: 5px;
+			}
+			
+			.container input:hover {
+				border: 1px solid #00cc77!important;
+			}
+			
+			.container .sexDiv {
+				height: 38px;
+				background-color: #FFF;
+			}
+			
+			.container button {
+				margin: 10px 25px;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div id="container" class="container">
+			<div class="goIndex" onclick="window.open('../../index.html','_self')">返回首页</div>
+			<div class="propMoneyBg"></div>
+			<h2>业主信息</h2>
+			<form class="layui-form" action="">
+				<div class="layui-form-item">
+					<label class="layui-form-label"><span class="redStar">*</span>业主姓名</label>
+					<div class="layui-input-block">
+						<input type="text" maxlength="10" autocomplete="off" placeholder="请填写业主名" class="layui-input" v-model="ownerName">
+					</div>
+				</div>
+				<div class="layui-form-item">
+					<label class="layui-form-label"><span class="redStar">*</span>住宅地址</label>
+					<div class="layui-input-block">
+						<input type="text" maxlength="30" autocomplete="off" placeholder="请填写几楼几单元几室" class="layui-input" v-model="ownerInfo">
+					</div>
+				</div>
+				<div class="layui-form-item">
+					<label class="layui-form-label"><span class="redStar">*</span>身份证号</label>
+					<div class="layui-input-block">
+						<input type="text" maxlength="18" autocomplete="off" placeholder="请填写身份证号" class="layui-input" v-model="ownerCart">
+					</div>
+				</div>
+				<!--<div class="layui-form-item">
+					<label class="layui-form-label">性别</label>
+					<div class="layui-input-block sexDiv">
+						<input type="radio" name="sex" value="1" title="男" checked="">
+						<input type="radio" name="sex" value="2" title="女">
+					</div>
+				</div>
+				<div class="layui-form-item">
+					<label class="layui-form-label">年龄</label>
+					<div class="layui-input-block">
+						<input type="number" name="age" lay-verify="age" autocomplete="off" placeholder="请填写年龄" class="layui-input">
+					</div>
+				</div>-->
+				<div class="layui-form-item">
+					<label class="layui-form-label"><span class="redStar">*</span>手机号</label>
+					<div class="layui-input-block">
+						<input type="tel" maxlength="11" autocomplete="off" placeholder="请填写用手机号" class="layui-input" v-model="ownerTel">
+					</div>
+				</div>
+				<div class="layui-form-item">
+					<button class="layui-btn" type="button" lay-filter="demo2" @click="ownerList">保存</button>
+					<button class="layui-btn" type="reset" lay-filter="demo2">重置</button>
+				</div>
+			</form>
+		</div>
+		<script src="../../Plugins/jquery-2.1.0.js"></script>
+		<script src="../../Plugins/layui/layui.js"></script>
+		<script src="../../Plugins/vue.js"></script>
+		<script src="../../js/common.js"></script>
+		<script>
+			var vm = new Vue({
+				el: "#container",
+				data: {
+					loginData: '',
+					ownerID: '',
+					ownerInfo: '',
+					ownerName: '',
+					ownerCart: '',
+					ownerTel: '',
+				},
+				mounted: function() {
+					this.$nextTick(function() {
+						layui.use(['layer', 'form'], function() {
+							var form = layui.form,
+								layer = layui.layer
+						});
+						setTimeout(function() {
+							vm.ownerID = query('id');
+							vm.getLoginData();
+							vm.isLogin();
+							if(vm.ownerID != 'aaa') {
+								vm.ownerIdData();
+							}
+						});
+					})
+				},
+				methods: {
+					//获取本地登录信息
+					getLoginData: function() {
+						if(localStorage.loginUrseData) {
+							vm.loginData = JSON.parse(localStorage.getItem('loginUrseData'));
+						}
+					},
+					//判断是否登录
+					isLogin: function() {
+						if(vm.loginData == '') {
+							window.open('../login.html', '_self');
+						}
+					},
+					//根据业主id获取该业主数据
+					ownerIdData: function() {
+						var url = "http://localhost:8080/pro_Servers/owner/ownerID/" + query('id');
+						$.ajax({
+							type: "GET",
+							url: url,
+							success: function(res) {
+								console.log(res);
+								if(res.status == 'ok') {
+									vm.ownerID = res.t.ownerID;
+									vm.ownerInfo = res.t.ownerInfo;
+									vm.ownerName = res.t.ownerName;
+									vm.ownerCart = res.t.ownerCart;
+									vm.ownerTel = res.t.ownerTel;
+								} else {
+									layer.msg('信息获取失败！');
+								}
+							},
+							error: function() {
+								layer.msg('信息获取失败！');
+							}
+						});
+					},
+					//业主信息
+					ownerList: function() {
+						if(vm.ownerID == 'aaa') {
+							var url = "http://localhost:8080/pro_Servers/owner/";
+						} else {
+							var url = "http://localhost:8080/pro_Servers/owner/update";
+						}
+						var newDate = new Date();
+						var upDate = newDate.getFullYear() + ' - ' + (newDate.getMonth() + 1) + ' - ' + newDate.getDate();
+
+						var obj = {
+							"ownerInfo": vm.ownerInfo,
+							"ownerName": vm.ownerName,
+							"ownerCart": vm.ownerCart,
+							"ownerTel": vm.ownerTel,
+							"update_Tm": upDate
+						}
+						if(vm.ownerID != 'aaa') {
+							obj['ownerID'] = vm.ownerID;
+						}
+
+						if(!obj.ownerInfo) {
+							layer.msg('请填写住址！');
+							return
+						} else if(!obj.ownerName) {
+							layer.msg('请填写业主姓名！');
+							return
+						} else if(!obj.ownerCart) {
+							layer.msg('请填写身份证号！');
+							return
+						} else if(!obj.ownerTel) {
+							layer.msg('请填写业主手机！');
+							return
+						}
+						console.log(obj);
+
+						$.ajax({
+							type: "POST",
+							url: url,
+							data: obj,
+							success: function(res) {
+								if(res.stuts == 'ok') {
+									layer.msg('操作成功！');
+									setTimeout(function() {
+										window.open('ownerList.html', '_self');
+									}, 1200);
+								} else {
+									layer.msg('操作失败！');
+								}
+							},
+							error: function() {
+								layer.msg('操作失败！');
+							}
+						});
+					}
+				}
+			});
+		</script>
+
+	</body>
+
+</html>
