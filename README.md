@@ -9,3 +9,15 @@ Pro_Servers文件夹是后端 在eclipse打开
 web是前端代码
 
 pro_server(1).sql是MySQL数据库代码
+
+5.1.1 软件开发在windows环境下进行
+
+（1）jdk 1.8
+
+（2）MySql-5.6
+
+（3）tomcat-8.5
+
+（4）HBuilder
+
+（5）eclipse
